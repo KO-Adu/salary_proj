@@ -7,14 +7,12 @@ url: https://github.com/arapfaik/scraping-glassdoor-selenium
 """
 from selenium.common.exceptions import NoSuchElementException, ElementClickInterceptedException
 from selenium import webdriver
-
-
 import time
 import pandas as pd
 
 
-def get_jobs(keyword, num_jobs, verbose, path, slp_time):
-    
+# def get_jobs(keyword, num_jobs, verbose, path, slp_time):
+def get_jobs(num_jobs, verbose, path, slp_time):
     '''Gathers jobs as a dataframe, scraped from Glassdoor'''
     
     #Initializing the webdriver
@@ -26,9 +24,13 @@ def get_jobs(keyword, num_jobs, verbose, path, slp_time):
     #Change the path to where chromedriver is in your home folder.
     driver = webdriver.Chrome(executable_path=path, options=options)
     driver.set_window_size(1120, 1000)
-    url = "https://www.glassdoor.ca/Job/jobs.htm?suggestCount=0&suggestChosen=false&clickSource=searchBtn&typedKeyword="+keyword+"&sc.keyword="+keyword+"&locT=&locId=&jobType="
+
     #url = "https://www.glassdoor.com/Job/jobs.htm?suggestCount=0&suggestChosen=false&clickSource=searchBtn&typedKeyword="+keyword+"&sc.keyword="+keyword+"&locT=&locId=&jobType="
     #url = 'https://www.glassdoor.com/Job/jobs.htm?sc.keyword="' + keyword + '"&locT=C&locId=1147401&locKeyword=San%20Francisco,%20CA&jobType=all&fromAge=-1&minSalary=0&includeNoSalaryJobs=true&radius=100&cityId=-1&minRating=0.0&industryId=-1&sgocId=-1&seniorityType=all&companyId=-1&employerSizes=0&applicationType=0&remoteWorkType=0'
+    url = "https://www.glassdoor.ca/Job/data-scientist-jobs-SRCH_KO0,14.htm?minSalary=11000&maxSalary=398200&includeNoSalaryJobs=false"
+
+    
+    
     driver.get(url)
     jobs = []
 
@@ -48,7 +50,7 @@ def get_jobs(keyword, num_jobs, verbose, path, slp_time):
 
         try:
             driver.find_element_by_css_selector('[alt="Close"]').click() #clicking to the X.
-            print(' x out worked')
+            # print(' x out worked')
         except NoSuchElementException:
             print(' x out failed')
             pass
@@ -77,7 +79,14 @@ def get_jobs(keyword, num_jobs, verbose, path, slp_time):
                     time.sleep(5)
 
             try:
-                salary_estimate = driver.find_element_by_xpath('.//span[@class="gray salary"]').text
+                #salary_estimate = driver.find_element_by_xpath('.//span[@class="gray salary"]').text
+                #salary_estimate = driver.find_element_by_xpath('.//div[@class="salary"]//label[text()="css-1uyte9r css-hca4ks e1wijj242"]//following-sibling::*').text
+                #salary_estimate = driver.find_element_by_xpath('.//span[@class="salaryEstimate css-nq3w9f pr-xxsm"]').text
+                
+                #salary_estimate = driver.find_element_by_xpath("/html/body[@class='main flex loggedIn lang-en en-CA hollywood wide hasTwoPanes _initOk serpControl vsc-initialized']/div[@class='gdGrid pageContentWrapper']/div[@id='PageContent']/div[@id='PageBodyContents']/div[@id='JobSearch']/div[@class='gdGrid noPad']/div[@id='JobResults']/section[@id='PanesWrap']/div[@id='JDCol']/div[@id='JDWrapper']/article[@class='jobDetails scrollable active']/div/div[@class='intersection-visible-wrapper']/div[@id='HeroHeaderModule']/div[@class='empWrapper ctasTest']/div[@class='empInfo newDetails']/div[@class='salary']/span[@class='css-1uyte9r css-hca4ks e1wijj242']").text
+                salary_estimate = driver.find_element_by_xpath('.//div[@class = "salary"]').text
+
+                
             except NoSuchElementException:
                 salary_estimate = -1 #You need to set a "not found value. It's important."
             
