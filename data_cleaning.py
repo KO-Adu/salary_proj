@@ -50,3 +50,4 @@ df['excel_yn'] = df['Job Description'].apply(lambda x: 1 if 'excel' in x.lower()
 df_out = df.copy()
 
 df_out.to_csv('salary_data_cleaned.csv', index = False)
+
